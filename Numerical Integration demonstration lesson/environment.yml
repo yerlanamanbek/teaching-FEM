@@ -1,5 +1,7 @@
 name: environment
-
+channels:
+  - damianavila82
+  - conda-forge
 dependencies:
 - python = 3.4
 - numpy
@@ -7,4 +9,6 @@ dependencies:
 - scipy
 - widgetsnbextension
 - ipywidgets
+- pandas
+- bokeh
 - rise
