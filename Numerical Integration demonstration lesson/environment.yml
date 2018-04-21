@@ -2,6 +2,7 @@ name: environment
 
 dependencies:
 - python = 3.4
+- requests=2.18.4
 - numpy
 - matplotlib
 - scipy
