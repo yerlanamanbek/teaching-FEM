@@ -11910,7 +11910,7 @@ a.anchor-link {
 <h3 id="Yerlan-Amanbek">Yerlan Amanbek<a class="anchor-link" href="#Yerlan-Amanbek">&#182;</a></h3><p><b> yerlan@utexas.edu </b></p>
 <table style="border-style: hidden;">
 <tr>
-<td style="border-left: none"><img src="images/ices-logo-2017.png" width="200"></td>
+<td style="border-left: none"><img src="images/ices-logo-2017.png" width="350"></td>
 </tr>
 </table>
 </div>
@@ -11920,88 +11920,47 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Outline">Outline<a class="anchor-link" href="#Outline">&#182;</a></h1><p>Gauss integration
- Comparision to Numerical intergration methods</p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Gauss-integration">Gauss integration<a class="anchor-link" href="#Gauss-integration">&#182;</a></h1>
-</div>
-</div>
-</div><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>As stated before, the analytic expressions for the mass and stiffness matrices is useful for non-distorted elements. In the general case, a mapping between distorted elements and these <em>canonical</em> elements is used to simplify the integration domain. When this transformation is done, the functions to be integrated are more convoluted and we should use numerical integration like <em>Gauss-Legendre quadrature</em>.</p>
-<p>The Gauss-Legendre quadrature approximates the integral:
-$$     \int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^n w_i f(x_i)$$</p>
-<p>The nodes $x_i$ of an order $n$ quadrature rule are the roots of $P_n$
-and the weights $w_i$ are given by:
-$$w_i = \frac{2}{\left(1-x_i^2\right) \left(P'_n(x_i)\right)^2}$$</p>
-<p>For the first four orders, the weights and nodes are</p>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Numerical-Methods-of-Integration">Numerical Methods of Integration<a class="anchor-link" href="#Numerical-Methods-of-Integration">&#182;</a></h1>
-</div>
-</div>
-</div><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>The purpose of this notebook is to compare the five different methods of numerical integration discussed in class:</p>
-<ul>
-<li>left Riemann sums</li>
-<li>right Riemann sums</li>
-<li>midpoint rule</li>
-<li>trapezoid rule</li>
-<li>Simpson's rule</li>
+<h1 id="Objective">Objective<a class="anchor-link" href="#Objective">&#182;</a></h1><ul>
+<li>Revisit numerical intergration methods</li>
+<li>Gauss integration(optimal)</li>
 </ul>
-<p>You will first use each numerical method to integrate any function of your choice to get an intuitive feel about which methods are better.</p>
-<p>You will then learn the concept of the <strong>order</strong> of a numerical method, and investigate the order of each of the five methods. This gives you a way to quantify "which method is best."</p>
-<p>Lastly, you will learn about log-log plots and how they can be used to rigorously compute the order of a numerical method.</p>
 <h2 id="Set-up">Set-up<a class="anchor-link" href="#Set-up">&#182;</a></h2><p>The notebook relies on Python code. To initialize the notebook, select <strong>Cell-&gt;Run All Below</strong></p>
-
+<!-- * The efficacy of this approach will be judged by the
+considering the size of the class of polynomials for which
+this approximation formula gives exact results.
+ * With 2n values to be determined, we should expect the
+upper limit of the precision of this method to be 2n-1.
+ * In other words, this method should be exact for
+polynomials of degree 2n - 1 or less. -->
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>In general, case a mapping between elements and reference(master) elements is used to simplify the integration domain.</p>
+<p>We need to compute the definite integral a lot in the FEM computations.</p>
+<p>$$    I :=  \int_{a}^b f(x)\,dx$$</p>
+<p>The integral can be viewed graphically as the area between the x-axis and the curve y = f (x) in the region of the limits of integration. Thus, we can interpret numerical integration as an approximation of that area.</p>
+<!--- The Newton formulas discussed so far have used equally spaced nodes in the interval $[a, b]$ of the form $x_j = a+jh$  for  $j \in \mathbb{Z}$,
+where 
+$$ h=\frac{b-a}{n} $$ 
+for given $n \in \mathbb{N}$ -->
 </div>
 </div>
 </div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interact</span><span class="p">,</span> <span class="n">fixed</span><span class="p">,</span> <span class="n">IntSlider</span><span class="p">,</span> <span class="n">FloatSlider</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Dropdown</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">areaTools</span> <span class="k">as</span> <span class="nn">AT</span>
-<span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="nx">javascript</span>
-<span class="nx">IPython</span><span class="p">.</span><span class="nx">OutputArea</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">_should_scroll</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">lines</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-<span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Do not change the text in this box</span>
+<span class="n">f_box</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;exp(-x**2)&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x)=$&#39;</span><span class="p">)</span>
+<span class="n">n_slider</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$n_</span><span class="si">{start}</span><span class="s1">$&#39;</span><span class="p">)</span>
+<span class="n">method_type</span> <span class="o">=</span> <span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;midpoint&#39;</span><span class="p">,</span><span class="s1">&#39;trapezoid&#39;</span><span class="p">,</span><span class="s1">&#39;simpson&#39;</span><span class="p">],</span>
+                        <span class="n">value</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Method:&#39;</span><span class="p">)</span>
+<span class="n">interact</span><span class="p">(</span><span class="n">AT</span><span class="o">.</span><span class="n">plot3Areas</span><span class="p">,</span><span class="n">f</span><span class="o">=</span><span class="n">f_box</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s2">&quot;-1.0&quot;</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">n_slider</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="n">method_type</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -12020,13 +11979,15 @@ $$w_i = \frac{2}{\left(1-x_i^2\right) \left(P'_n(x_i)\right)^2}$$</p>
 
 
 
-<div id="4bcca907-c684-4451-9a29-8025f545e79e"></div>
-<div class="output_subarea output_javascript ">
+ 
+ 
+<div id="4d660b34-b2ac-4a2b-81c8-ec4ee4c732c4"></div>
+<div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#4bcca907-c684-4451-9a29-8025f545e79e');
-IPython.OutputArea.prototype._should_scroll = function(lines) {
-    return false;
-}
+var element = $('#4d660b34-b2ac-4a2b-81c8-ec4ee4c732c4');
+</script>
+<script type="application/vnd.jupyter.widget-view+json">
+{"model_id": "aa2bda709a2e4215a5d06840a96bc409", "version_major": 2, "version_minor": 0}
 </script>
 </div>
 
@@ -12040,9 +12001,6 @@ IPython.OutputArea.prototype._should_scroll = function(lines) {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Generating-approximations-of-areas">Generating approximations of areas<a class="anchor-link" href="#Generating-approximations-of-areas">&#182;</a></h2><p>First try approximating the area of several functions using each method to get a sense of which numerical methods you think are better or worse than the others.</p>
-<p><strong>Do:</strong> Change the variables in the boxes below based on the problem that you're interested in. The notebook will automatically change the picture and computations to reflect your changes.</p>
-<p><strong>Consider:</strong> Which numerical method to do you think is best? Worst? Does your answer seem to depend on $n$?</p>
 <p>Some quick explanations of how the notebook works:</p>
 <p><strong>The meaning of the variables are as follows:</strong></p>
 <ul>
@@ -12071,116 +12029,38 @@ IPython.OutputArea.prototype._should_scroll = function(lines) {
 
 </div>
 </div>
-</div></section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Do not change the text in this box</span>
-<span class="n">f_box</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;exp(-x**2)&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x)=$&#39;</span><span class="p">)</span>
-<span class="n">n_slider</span> <span class="o">=</span> <span class="n">IntSlider</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">interact</span><span class="p">(</span><span class="n">AT</span><span class="o">.</span><span class="n">plotArea</span><span class="p">,</span><span class="n">f</span><span class="o">=</span><span class="n">f_box</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s2">&quot;-2.0&quot;</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">n_slider</span><span class="p">);</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-
- 
- 
-<div id="5521c711-51bd-48c9-a26f-ef7d34dc91bf"></div>
-<div class="output_subarea output_widget_view ">
-<script type="text/javascript">
-var element = $('#5521c711-51bd-48c9-a26f-ef7d34dc91bf');
-</script>
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "df12cfd8d1c54a758617088e31c41115", "version_major": 2, "version_minor": 0}
-</script>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Comparing-the-different-methods">Comparing the different methods<a class="anchor-link" href="#Comparing-the-different-methods">&#182;</a></h2><p>For the default example $f(x) = e^{-x^2}$ and $n=4$ it appears that the left and right Riemann sums are better methods than Simpson's rule. However, if I increase n even to $n=6$ Simpson's rule is better! So how do we quantify which method is "better" in a consistent way? To understand how to do so, consider the following data:</p>
-<table>
-<thead><tr>
-<th style="text-align:center">n</th>
-<th style="text-align:center">error: method 1</th>
-<th style="text-align:center">error: method 2</th>
-<th style="text-align:center">error: method 3</th>
-</tr>
-</thead>
-<tbody>
+<p>$$     \int_{a}^b f(x)\,dx \approx \sum_{i=1}^n w_i f(x_i)$$</p>
+<p>The trapezoidal rule of numerical integration simply
+approximates the area by the sum of several equally spaced trapezoids under the curve between the limits of a and b.</p>
+<table style="border-style: hidden;">
 <tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">4.0</td>
-<td style="text-align:center">8.0</td>
-<td style="text-align:center">8.0</td>
+<td style="border-left: none"><img src="images/integration_trapezoidal.png" width="250"></td>
 </tr>
-<tr>
-<td style="text-align:center">4</td>
-<td style="text-align:center">2.0</td>
-<td style="text-align:center">2.0</td>
-<td style="text-align:center">1.0</td>
-</tr>
-<tr>
-<td style="text-align:center">8</td>
-<td style="text-align:center">1.0</td>
-<td style="text-align:center">0.5</td>
-<td style="text-align:center">0.125</td>
-</tr>
-</tbody>
-</table>
-<p>Which method do you think is better? If you were only using 2 subintervals then the obvious answer is method 1. But as soon as we increase $n$ this changes. It somehow feels like method 3 is the best since the error <strong>more quickly approaches zero as the number of sub-intervals increases</strong>, but how do we quantify this? The trick is to take the <strong>ratio</strong> between successive rows of hte table. For the methods in the table we observe that: As the number of subintervals <strong>doubles</strong> the error for method 1 decreases by a <strong>factor of 2</strong>, the error for method 2 decreases by a <strong>factor of 4</strong>, and the error for method 3 decreases by a <strong>factor of 8</strong>. The more mathematically precise way of saying this is to relate the error to a power of $1/n$ (or, equivalently, $\Delta x$). For the methods listed above we have:</p>
-<p>$$
-\text{error}_{\text{method 1}} = \frac{C_1}n = \tilde C_1\left(\Delta x\right)\qquad
-\text{error}_{\text{method 2}} = \frac{C_2}{n^2} = \tilde C_2\left(\Delta x\right)^2\qquad
-\text{error}_{\text{method 3}} = \frac{C_3}{n^3} = \tilde C_3\left(\Delta x\right)^3
-$$</p>
-<p>In this case, we call method 1 an <strong>1st order</strong> method, method 2 an <strong>2nd order</strong> method, and method 3 a <strong>3rd order</strong> method. In general, if the error for a method is proportional to $1/n^p$ (equivalently $(\Delta x)^p$), we call the method as <strong>pth order</strong> method. Thus a higher-order method is "better" in the sense that the error approaches zero more rapidly as you increase the number of intervals.</p>
-<p>Let's investigate the order of all five numerical methods discussed in class.</p>
-<p><strong>Do:</strong></p>
-<p>(1) Change the variables in the boxes below based on the problem that you're interested in.</p>
-<ul>
-<li>"$n_{start}$" is the starting number of subintervals; the program will automatically approximate the area with $n = n_{start}$, $n=2n_{start}$, and $n=4n_{start}$ subintervals.</li>
-</ul>
-<p>(2) Repeat with a different function, or a different interval of integration.</p>
-<p><strong>Consider</strong>: Can you determine the order of each method?</p>
+</table><p>The height of a trapezoid is found from the integrand, $y_j = y ( x_j )$, evaluated at equally spaced points, $x_j$ and $x_{j+1}$. Thus, a typical contribution is $Area = h\frac{ y_j + y_{j+1}}{2}$, where $h = x_{j+1} − x_j $ is the spacing. Thus, for $n$ points (and
+$n − 1$ spaces), the well-known approximation is
+$$ I \approx h \left( \frac{1}{2} y_1+y_2+y_3+ ...+y_{n-1}+ \frac{1}{2} y_n \right)$$
+where $w_j = h$, except $w_1 = w_n = \frac{h}{2}$.</p>
 
 </div>
 </div>
 </div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Do not change the text in this box</span>
+<span class="c1"># -3*x**2+2*x+6</span>
 <span class="n">f_box</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;exp(-x**2)&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x)=$&#39;</span><span class="p">)</span>
-<span class="n">n_slider</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$n_</span><span class="si">{start}</span><span class="s1">$&#39;</span><span class="p">)</span>
-<span class="n">method_type</span> <span class="o">=</span> <span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;midpoint&#39;</span><span class="p">,</span><span class="s1">&#39;trapezoid&#39;</span><span class="p">,</span><span class="s1">&#39;simpson&#39;</span><span class="p">],</span>
-                        <span class="n">value</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Method:&#39;</span><span class="p">)</span>
-<span class="n">interact</span><span class="p">(</span><span class="n">AT</span><span class="o">.</span><span class="n">plot3Areas</span><span class="p">,</span><span class="n">f</span><span class="o">=</span><span class="n">f_box</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s2">&quot;0.0&quot;</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s2">&quot;2.0&quot;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">n_slider</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="n">method_type</span><span class="p">);</span>
+<span class="n">n_slider</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$n_</span><span class="si">{start}</span><span class="s1">$&#39;</span><span class="p">)</span>
+<span class="n">method_type</span> <span class="o">=</span> <span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;trapezoid&#39;</span><span class="p">],</span>
+                        <span class="n">value</span><span class="o">=</span><span class="s1">&#39;trapezoid&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Method:&#39;</span><span class="p">)</span>
+<span class="n">interact</span><span class="p">(</span><span class="n">AT</span><span class="o">.</span><span class="n">plot3Areas</span><span class="p">,</span><span class="n">f</span><span class="o">=</span><span class="n">f_box</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s2">&quot;-1.0&quot;</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">n_slider</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="n">method_type</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -12201,13 +12081,13 @@ $$</p>
 
  
  
-<div id="01d59f1e-72a6-45d1-80dd-e20d70a1a900"></div>
+<div id="60db45bd-8877-4041-ac31-a3ada1431517"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#01d59f1e-72a6-45d1-80dd-e20d70a1a900');
+var element = $('#60db45bd-8877-4041-ac31-a3ada1431517');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "8645050867ed49eca0bcc712d441d9aa", "version_major": 2, "version_minor": 0}
+{"model_id": "0744695f42704f9da43a8deccb89389c", "version_major": 2, "version_minor": 0}
 </script>
 </div>
 
@@ -12216,122 +12096,186 @@ var element = $('#01d59f1e-72a6-45d1-80dd-e20d70a1a900');
 </div>
 </div>
 
-</div>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h3><p>It turns out that the Left and Right Riemann sums are first order methods, Midpoint and Trapezoid rules are second order methods, and Simpson's rule is a fourth order method. In fact, the errors $e$ are bounded by:</p>
-<p>$$
-e_{left} \le \frac{k_1(b-a)}{2} \Delta x \qquad e_{right} \le \frac{k_1(b-a)}{2} \Delta x\qquad\text{where } k_1 = \max_{x\in[a,b]} |f'(x)|
-$$</p>
-<p>$$
-e_{midpoint} \le \frac{k_2(b-a)}{24} \left(\Delta x\right)^2 \qquad e_{trapezoid} \le \frac{k_2(b-a)}{12} \left(\Delta x\right)^2\qquad\text{where } k_2 = \max_{x\in[a,b]} |f''(x)|
-$$</p>
-<p>$$
-e_{Simpson} \le \frac{k_4(b-a)}{180} \left(\Delta x\right)^4 \qquad\text{where } k_4 = \max_{x\in[a,b]} |f^{(4)}(x)|
-$$</p>
-<p>The order of each method is determine by the power $\Delta x$ is raised to.</p>
-<p><strong>Remark 1</strong>: Since the error bound for the Left and Right Riemann sums is proportional to $\max_{x\in[a,b]} |f'(x)|$, the error must be zero for any function such that $f'(x)=0$ in the whole interval; in other words, the Left and Right Riemann sums are <strong>exact</strong> for constant functions $f(x)=c$. This makes sense since for constant functions the area in each subinterval <strong>is</strong> just a rectangle. Try $f(x) = 1$ in the first interactive box above to convince yourself of this picture. Note that to use the interactive feature all function definitions must have an $x$ in them; so you really need to enter something like $f(x) = 1+0*x$ or $f(x) = 1+x-x$ or $f(x) = 1*(x**0)$.</p>
-<p>Similarly, the Midpoint Rule and Trapezoid Rule are <strong>exact</strong> for linear functions $f(x) = ax+b$ since then $f''(x) = 0$ for all $x$. This makes sense for the Trapezoid Rule since for linear functions the area under the curve <strong>is</strong> a trapezoid. It also makes sense for the Midpoint Rule since the rectangle formed by the Midpoint Rule overestimates half of each subdivision by the exact same amount that it underestimates the other half. Try $f(x) = -2*x+3$ in the first interactive box above to convince yourself of this picture. Also note the Midpoint Rule and Trapezoid Rule are still exact for constant functions (you can think of constant functions as "lines" with $a=0$).</p>
-<p>Laslty, Simpson's Rule is exact for cubic functions $f(x) = ax^3+bx^2+cx+d$ since then $f^{(4)}(x) = 0$ for all $x$. The picture is not as intuitive, but try a cubic function in the interactive box above just to convince yourself that it's true. Also note that we can set $a$, $b$, $c$, or $d$ to zero, so what we really mean is that Simpson's rule is exact for any polynomial <strong>up to</strong> cubic order.</p>
-<p><strong>Remark 2</strong>: These error boundsare just the "worst-case scenario." The order of the method matches the data for the default example $f(x) = e^{-x^2}$ on the inteval $[0,2]$, but if we change the interval to $[-2,2]$ the Left and Right Riemann sums behave like fourth order methods! This is because the symmetry of the specific function helps these methods to perform better than one would expect from the general theory.</p>
+<h1 id="Gauss-integration">Gauss integration<a class="anchor-link" href="#Gauss-integration">&#182;</a></h1><p>The famous mathematician Gauss posed this question:</p>
+<ul>
+<li><p>What is the minimum number of points, $n$, required to exactly integrate a polynomial?</p>
+</li>
+<li><p>What are the corresponding function values and weights?</p>
+</li>
+</ul>
+<table style="border-style: hidden;">
+<tr>
+<td style="border-left: none"><img src="images/trapezoidalrule.png" width="250"></td>
+<td style="border-left: none"><img src="images/gaussian_quadrature.png" width="250"></td>  
+
+</tr>
+</table>
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Example:">Example:<a class="anchor-link" href="#Example:">&#182;</a></h1><p>Let $[a, b] = [-1, 1]$ and $n=2$</p>
+<p>We want to choose $x_1, x_2, w_1$ and $w_2$ so that</p>
+<p>$$     \int_{-1}^1 f(x)\,dx \approx w_1 f(x_1) + w_2 f(x_2)$$</p>
+<p>The approximation should be exact for any polynomial of degree 3 or less.</p>
 
 </div>
 </div>
-</div>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="log-log-plots:-A-more-systematic-comparison-of-the-errors">log-log plots: A more systematic comparison of the errors<a class="anchor-link" href="#log-log-plots:-A-more-systematic-comparison-of-the-errors">&#182;</a></h2><p>The material in this section is <strong>optional</strong>! log-log plots are the way scientists investigate the order of a numerical method and so it's worthwhile for you to try to understand this idea. However, this material goes beyond the scope of this course and is not covered by your textbook; therefore, we will not ask you about it on an exam.</p>
-<p>Our goal is to find systematic way to compute the order of a method. To understand how to do this, let's consider the same table, but now taking the logarithm, base 2, of all the data. Recall that the logarithm is defined as follows:</p>
-<p>$2^y = x$ means that $\log_2(x) = y$ (and vice versa)</p>
-<p>Therefore, the original data table</p>
+<p>Let  $f(x) = a_0 + a_1x+a_2x^2+a_3x^3$</p>
+<p>then</p>
+<p>$\int_{-1}^1 f(x)\,dx = a_0\int_{-1}^1 1\,dx+a_1\int_{-1}^1 x\,dx+a_2\int_{-1}^1 x^2\,dx+a_3\int_{-1}^1 x^3\,dx$</p>
+<p>Each of the definite integrals on the right-hand side has an
+integrand of degree 3 or less. Gaussian Quadrature should be
+exact for each of these.</p>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Applying Gaussian Quadrature to each remaining integral
+yields:</p>
+<p>$$\int_{-1}^1 1\,dx = 2 = w_1 + w_2$$</p>
+<p>$$\int_{-1}^1 x \,dx = 0 = w_1 x_1 +w_2 x_2$$</p>
+<p>$$\int_{-1}^1 x^2\,dx = \frac{2}{3} = w_1 x_1^2+w_2x_2^2$$</p>
+<p>$$ \int_{-1}^1 x^3\,dx = 0 =w_1x_1^3 +w_2 x_2^3$$</p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$w_1 + w_2 = 2$</p>
+<p>$w_1 x_1 +w_2 x_2 = 0$   we obtain $w_1 = \frac{2x_2}{x_2-x_1}$ and $w_2 = \frac{2x_1}{x_1-x_2}$</p>
+<p>Using these values for $3^{rd}$ equation $x_1 x_2 =-\frac{1}{3}$ and $4^{th}$ equation $x_1 = -x_2$.</p>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Solving the nonlinear system gives us</p>
+<p><center>
+$w_1 =1$, $w_2=1$, $x_1 = - \frac{\sqrt 3}{3}$, $x_2 =  \frac{\sqrt 3}{3}$
+</center>
+Therefore,</p>
+<p>$$\int_{-1}^1 f(x)\,dx \approx f \left( \frac{-\sqrt 3}{3}\right)+ f \left( \frac{\sqrt 3}{3}\right)$$</p>
+<p>Above Gauss quadrature integral has degree of precision 3. Trapezoidal rule has degree of precision 1.</p>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <table>
 <thead><tr>
-<th style="text-align:center">n</th>
-<th style="text-align:center">error: method 1</th>
-<th style="text-align:center">error: method 2</th>
-<th style="text-align:center">error: method 3</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">4.0</td>
-<td style="text-align:center">8.0</td>
-<td style="text-align:center">8.0</td>
-</tr>
-<tr>
-<td style="text-align:center">4</td>
-<td style="text-align:center">2.0</td>
-<td style="text-align:center">2.0</td>
-<td style="text-align:center">1.0</td>
-</tr>
-<tr>
-<td style="text-align:center">8</td>
-<td style="text-align:center">1.0</td>
-<td style="text-align:center">0.5</td>
-<td style="text-align:center">0.125</td>
-</tr>
-</tbody>
-</table>
-<p>becomes:</p>
-<table>
-<thead><tr>
-<th style="text-align:center">$\log_2(n)$</th>
-<th style="text-align:center">$\log_2$(error): method 1</th>
-<th style="text-align:center">$\log_2$(error): method 2</th>
-<th style="text-align:center">$\log_2$(error): method 3</th>
+<th style="text-align:center">Number of points, $n$</th>
+<th style="text-align:center">Weights, $w_i$</th>
+<th style="text-align:center">Points, $x_i$</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:center">1</td>
-<td style="text-align:center">2.0</td>
-<td style="text-align:center">3.0</td>
-<td style="text-align:center">3.0</td>
+<td style="text-align:center">$2$</td>
+<td style="text-align:center">$0$  </td>
 </tr>
 <tr>
 <td style="text-align:center">2</td>
-<td style="text-align:center">1.0</td>
-<td style="text-align:center">1.0</td>
-<td style="text-align:center">0.0</td>
+<td style="text-align:center">$1$</td>
+<td style="text-align:center">$\pm \frac{1}{\sqrt 3}$</td>
 </tr>
 <tr>
 <td style="text-align:center">3</td>
-<td style="text-align:center">0.0</td>
-<td style="text-align:center">-1.0</td>
-<td style="text-align:center">-3.0</td>
+<td style="text-align:center">$0$</td>
+<td style="text-align:center">$\frac{8}{9}$</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">$\pm \sqrt \frac{3}{5}$</td>
+<td style="text-align:center">$\frac{5}{9}$</td>
+</tr>
+<tr>
+<td style="text-align:center">4</td>
+<td style="text-align:center">$\frac{18+\sqrt{30}}{36}$</td>
+<td style="text-align:center">$\pm \sqrt {\frac{3}{7} -\frac{2}{7} \sqrt{\frac{6}{5}}}$</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:center">$\frac{18-\sqrt{30}}{36}$</td>
+<td style="text-align:center">$\pm \sqrt {\frac{3}{7} +\frac{2}{7} \sqrt{\frac{6}{5}}}$</td>
 </tr>
 </tbody>
 </table>
-<p>Observe that the slope of the log-log plot for method 1 (the 1st order method) is -1, the slope for the log-log plot for method 2 (the second order method) is -2, and the slope for method 3 (the third order method) is -3! In general, we have the following rule:</p>
-<p><strong>"If a method is pth order, then the slope of the log-log plot of $n$ versus the error will have slope of $-p$."</strong></p>
-<p>This follows from the definitions of <em>logarithm</em> and <em>order</em>.</p>
-<p>Let's investigate the order of all five numerical methods using log-log plots.</p>
-<p><strong>Do:</strong></p>
-<p>(1) Change the variables in the boxes below based on the problem that you're interested in.</p>
-<ul>
-<li>The program automatically computes the error for $n=[8,16,32,64,128]$ subintervals. The graph is a log-log plot of the error for each method and each value of n.</li>
-</ul>
-<p><strong>Consider</strong>:</p>
-<p>(1) Which method has the steepest slope? Which has the least steep slope?</p>
-<p>(2) What is the order of each method? Does this match your prediction from the comparison plots above?</p>
-<p>Technical Note: for ease of comparison between the methods, all errors have been normalized so that the upper left endpoint of the log-log curves are always located at (1,1).</p>
 
 </div>
 </div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Example">Example<a class="anchor-link" href="#Example">&#182;</a></h1><p>$\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx$ = $\frac{x^3}{3} \bigg\rvert_{-1}^{1} +\sin{x}\bigg\rvert_{-1}^{1} =\frac{2}{3}+2\sin(1)$</p>
+<p>Trapezoidal rule :</p>
+<p>$\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx \approx \frac{2}{2}\left( f \left( -1\right)+ f \left( 1\right)\right)$</p>
+<p>Gauss quadrature:
+$\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx \approx f \left( \frac{-\sqrt 3}{3}\right)+ f \left( \frac{\sqrt 3}{3}\right)$</p>
+
+</div>
+</div>
+</div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Do not change the text in this box</span>
-<span class="n">f_box</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;exp(-x**2)&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x)=$&#39;</span><span class="p">)</span>
-<span class="n">interact</span><span class="p">(</span><span class="n">AT</span><span class="o">.</span><span class="n">compareMethods</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f_box</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s2">&quot;0.0&quot;</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s2">&quot;2.0&quot;</span><span class="p">);</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="k">import</span> <span class="n">quad</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">pi</span>
+
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1">#integrant</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div><div class="fragment">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">I_actual</span> <span class="o">=</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#computed integral</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analytical computation of integral       is </span><span class="si">%1.10f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">I_actual</span><span class="p">)</span>
+
+<span class="c1">#Trapezoidal rule for integral computation</span>
+<span class="n">h</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">I_trapezoidal</span> <span class="o">=</span> <span class="n">h</span><span class="o">*</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">error_trapezoidal</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">I_actual</span> <span class="o">-</span> <span class="n">I_trapezoidal</span><span class="p">)</span>                   
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Trapezoidal rule computation of integral is </span><span class="si">%1.10f</span><span class="s2"> and error is </span><span class="si">%1.10f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">I_trapezoidal</span><span class="p">,</span> <span class="n">error_trapezoidal</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12347,27 +12291,82 @@ $$</p>
 <div class="prompt"></div>
 
 
-
-
-
- 
- 
-<div id="204e4c55-fe95-49f8-a5f9-70684a7276a6"></div>
-<div class="output_subarea output_widget_view ">
-<script type="text/javascript">
-var element = $('#204e4c55-fe95-49f8-a5f9-70684a7276a6');
-</script>
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "cf0162fd6d83488aacd7765504204634", "version_major": 2, "version_minor": 0}
-</script>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Analytical computation of integral       is 2.3496086363
+Trapezoidal rule computation of integral is 3.0806046117 and error is 0.7309959755
+</pre>
 </div>
-
 </div>
 
 </div>
 </div>
 
+</div></div><div class="fragment">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Gauss quadrature rule for integral computation</span>
+<span class="n">I_Gauss_Quadrature</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">-</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">+</span><span class="n">f</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">error_gauss</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">I_actual</span> <span class="o">-</span> <span class="n">I_Gauss_Quadrature</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Analytical computation of integral       is </span><span class="si">%1.10f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">I_actual</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gauss quadrature computation of integral is </span><span class="si">%1.10f</span><span class="s2"> and error is </span><span class="si">%1.10f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">I_Gauss_Quadrature</span><span class="p">,</span> <span class="n">error_gauss</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Analytical computation of integral       is 2.3496086363
+Gauss quadrature computation of integral is 2.3424903221 and error is 0.0071183142
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Gauss-quadrature-on-arbitrary-intervals">Gauss quadrature on arbitrary intervals<a class="anchor-link" href="#Gauss-quadrature-on-arbitrary-intervals">&#182;</a></h1><p>Use substition or transformation to transform $\int_{a}^b f(x)\,dx $ into an integral defined over [-1, 1]</p>
+<p>Let $x = \frac{1}{2}(a+b)+\frac{1}{2}(b-a)t$, with $t \in [-1, 1]$
+Then</p>
+<p>$$ \int_{a}^b f(x)\,dx = \int_{-1}^1 f\left(\frac{1}{2}(a+b)+\frac{1}{2}(b-a)t \right) \frac{b-a}{2}\,dt$$</p>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><ul>
+<li>Numerical experiements</li>
+<li><p>Gauss quadrature concepts:</p>
+<ul>
+<li>using $n$ quadrature points, a polynomial P(x) of degree (2n – 1) or less will be integrated exactly. </li>
+<li>Compared to trapezoidal rule</li>
+</ul>
+</li>
+</ul>
+<!-- * When the same number of nodes is used, the algebraic degree of precision of the Gaussian quadrature is higher than that of the Newton-Cotes quadrature. -->
+</div>
+</div>
+</div></section></section>
 </div>
 </div>
 
