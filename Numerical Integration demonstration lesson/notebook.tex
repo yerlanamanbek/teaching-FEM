@@ -289,14 +289,24 @@ Methods}\label{introduction-to-finite-element-methods}
 
  yerlan@utexas.edu 
 
-    \section{Objective}\label{objective}
+    \section{Motivation}\label{motivation}
+
+\begin{itemize}
+\tightlist
+\item
+  Integrant are complicated functions
+\item
+  Basis function are polynomials of higher order
+\end{itemize}
+
+\section{Objective}\label{objective}
 
 \begin{itemize}
 \tightlist
 \item
   Revisit numerical intergration methods
 \item
-  Gauss integration(optimal)
+  Gauss quadrature rule(optimal for polynomials)
 \end{itemize}
 
 \subsection{Set-up}\label{set-up}
@@ -306,17 +316,15 @@ The notebook relies on Python code. To initialize the notebook, select
 
     \subsection{Introduction}\label{introduction}
 
-In general, case a mapping between elements and reference(master)
-elements is used to simplify the integration domain.
+We need to compute the definite integral frequently in the FEM
+computations.
 
-We need to compute the definite integral a lot in the FEM computations.
+\[   \int_{a}^b f(x)\,dx \approx \sum_{i=1}^n w_i f(x_i)\]
 
-\[    I :=  \int_{a}^b f(x)\,dx\]
-
-The integral can be viewed graphically as the area between the x-axis
-and the curve y = f (x) in the region of the limits of integration.
-Thus, we can interpret numerical integration as an approximation of that
-area.
+The integral can be viewed graphically as the area between the
+\(x\)-axis and the curve \(y = f (x)\) in the region of the limits of
+integration. Thus, we can interpret numerical integration as an
+approximation of that area.
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{from} \PY{n+nn}{ipywidgets} \PY{k}{import} \PY{n}{interact}\PY{p}{,} \PY{n}{fixed}\PY{p}{,} \PY{n}{IntSlider}\PY{p}{,} \PY{n}{FloatSlider}\PY{p}{,} \PY{n}{Text}\PY{p}{,} \PY{n}{Dropdown}
@@ -343,7 +351,7 @@ area.
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}3}]:} \PY{c+c1}{\PYZsh{}\PYZsh{} Do not change the text in this box}
         \PY{n}{f\PYZus{}box} \PY{o}{=} \PY{n}{Text}\PY{p}{(}\PY{n}{value}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{exp(\PYZhy{}x**2)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{description}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}f(x)=\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-        \PY{n}{n\PYZus{}slider} \PY{o}{=} \PY{n}{widgets}\PY{o}{.}\PY{n}{IntSlider}\PY{p}{(}\PY{n+nb}{min}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,}\PY{n+nb}{max}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,} \PY{n}{step}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{value}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{,} \PY{n}{description}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}n\PYZus{}}\PY{l+s+si}{\PYZob{}start\PYZcb{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{n\PYZus{}slider} \PY{o}{=} \PY{n}{widgets}\PY{o}{.}\PY{n}{IntSlider}\PY{p}{(}\PY{n+nb}{min}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,}\PY{n+nb}{max}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,} \PY{n}{step}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{value}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{description}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}n\PYZus{}}\PY{l+s+si}{\PYZob{}start\PYZcb{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
         \PY{n}{method\PYZus{}type} \PY{o}{=} \PY{n}{Dropdown}\PY{p}{(}\PY{n}{options}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{left}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{right}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{midpoint}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{trapezoid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{simpson}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
                                 \PY{n}{value}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{left}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{description}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Method:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
         \PY{n}{interact}\PY{p}{(}\PY{n}{AT}\PY{o}{.}\PY{n}{plot3Areas}\PY{p}{,}\PY{n}{f}\PY{o}{=}\PY{n}{f\PYZus{}box}\PY{p}{,}\PY{n}{a}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}1.0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{b}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{1.0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{n}\PY{o}{=}\PY{n}{n\PYZus{}slider}\PY{p}{,}\PY{n}{method}\PY{o}{=}\PY{n}{method\PYZus{}type}\PY{p}{)}\PY{p}{;}
@@ -352,7 +360,7 @@ area.
 
     
     \begin{verbatim}
-interactive(children=(Text(value='exp(-x**2)', description='$f(x)=$'), Text(value='-1.0', description='a'), Text(value='1.0', description='b'), IntSlider(value=4, description='$n_{start}$', max=20, min=2, step=2), Dropdown(description='Method:', options=('left', 'right', 'midpoint', 'trapezoid', 'simpson'), value='left'), Output()), _dom_classes=('widget-interact',))
+interactive(children=(Text(value='exp(-x**2)', description='$f(x)=$'), Text(value='-1.0', description='a'), Text(value='1.0', description='b'), IntSlider(value=2, description='$n_{start}$', max=20, min=2, step=2), Dropdown(description='Method:', options=('left', 'right', 'midpoint', 'trapezoid', 'simpson'), value='left'), Output()), _dom_classes=('widget-interact',))
     \end{verbatim}
 
     
@@ -391,9 +399,9 @@ where \(w_j = h\), except \(w_1 = w_n = \frac{h}{2}\).
 
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}4}]:} \PY{c+c1}{\PYZsh{}\PYZsh{} Do not change the text in this box}
-        \PY{c+c1}{\PYZsh{} \PYZhy{}3*x**2+2*x+6}
-        \PY{n}{f\PYZus{}box} \PY{o}{=} \PY{n}{Text}\PY{p}{(}\PY{n}{value}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{exp(\PYZhy{}x**2)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{description}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}f(x)=\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
-        \PY{n}{n\PYZus{}slider} \PY{o}{=} \PY{n}{widgets}\PY{o}{.}\PY{n}{IntSlider}\PY{p}{(}\PY{n+nb}{min}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}\PY{n+nb}{max}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,} \PY{n}{step}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{value}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{description}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}n\PYZus{}}\PY{l+s+si}{\PYZob{}start\PYZcb{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{c+c1}{\PYZsh{} \PYZhy{}3*x**2+2*x+6  7*x**3\PYZhy{}8*x**2\PYZhy{}3*x+3}
+        \PY{n}{f\PYZus{}box} \PY{o}{=} \PY{n}{Text}\PY{p}{(}\PY{n}{value}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}3*x**2+2*x+6}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{description}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}f(x)=\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{n\PYZus{}slider} \PY{o}{=} \PY{n}{widgets}\PY{o}{.}\PY{n}{IntSlider}\PY{p}{(}\PY{n+nb}{min}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,}\PY{n+nb}{max}\PY{o}{=}\PY{l+m+mi}{20}\PY{p}{,} \PY{n}{step}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{value}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{description}\PY{o}{=}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}n\PYZus{}}\PY{l+s+si}{\PYZob{}start\PYZcb{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
         \PY{n}{method\PYZus{}type} \PY{o}{=} \PY{n}{Dropdown}\PY{p}{(}\PY{n}{options}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{trapezoid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
                                 \PY{n}{value}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{trapezoid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{description}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Method:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
         \PY{n}{interact}\PY{p}{(}\PY{n}{AT}\PY{o}{.}\PY{n}{plot3Areas}\PY{p}{,}\PY{n}{f}\PY{o}{=}\PY{n}{f\PYZus{}box}\PY{p}{,}\PY{n}{a}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}1.0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{b}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{1.0}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{n}\PY{o}{=}\PY{n}{n\PYZus{}slider}\PY{p}{,}\PY{n}{method}\PY{o}{=}\PY{n}{method\PYZus{}type}\PY{p}{)}\PY{p}{;}
@@ -402,7 +410,7 @@ where \(w_j = h\), except \(w_1 = w_n = \frac{h}{2}\).
 
     
     \begin{verbatim}
-interactive(children=(Text(value='exp(-x**2)', description='$f(x)=$'), Text(value='-1.0', description='a'), Text(value='1.0', description='b'), IntSlider(value=2, description='$n_{start}$', max=20, min=1, step=2), Dropdown(description='Method:', options=('trapezoid',), value='trapezoid'), Output()), _dom_classes=('widget-interact',))
+interactive(children=(Text(value='-3*x**2+2*x+6', description='$f(x)=$'), Text(value='-1.0', description='a'), Text(value='1.0', description='b'), IntSlider(value=1, description='$n_{start}$', max=20, min=1, step=2), Dropdown(description='Method:', options=('trapezoid',), value='trapezoid'), Output()), _dom_classes=('widget-interact',))
     \end{verbatim}
 
     
@@ -441,13 +449,14 @@ these.
 
     Applying Gaussian Quadrature to each remaining integral yields:
 
-\[\int_{-1}^1 1\,dx = 2 = w_1 + w_2\]
+\[\int_{-1}^1 1\,dx = 2 = w_1f(x_1) + w_2f(x_2)=w_1 + w_2\]
 
-\[\int_{-1}^1 x \,dx = 0 = w_1 x_1 +w_2 x_2\]
+    \[\int_{-1}^1 x \,dx = 0 = w_1f(x_1) + w_2f(x_2)= w_1 x_1 +w_2 x_2\]
 
-\[\int_{-1}^1 x^2\,dx = \frac{2}{3} = w_1 x_1^2+w_2x_2^2\]
+    \[\int_{-1}^1 x^2\,dx = \frac{2}{3} = w_1 x_1^2+w_2x_2^2\]
 
-\[ \int_{-1}^1 x^3\,dx = 0 =w_1x_1^3 +w_2 x_2^3\]
+    \[ \int_{-1}^1 x^3\,dx = 0 =  w_1x_1^3 +w_2 x_2^3\] We must solve this
+system of 4 nonlinear equations in 4 unknowns.
 
     \(w_1 + w_2 = 2\)
 
@@ -469,61 +478,12 @@ Therefore,
 Above Gauss quadrature integral has degree of precision 3. Trapezoidal
 rule has degree of precision 1.
 
-    \begin{longtable}[]{@{}ccc@{}}
-\toprule
-\begin{minipage}[b]{0.13\columnwidth}\centering\strut
-Number of points, \(n\)\strut
-\end{minipage} & \begin{minipage}[b]{0.34\columnwidth}\centering\strut
-Weights, \(w_i\)\strut
-\end{minipage} & \begin{minipage}[b]{0.44\columnwidth}\centering\strut
-Points, \(x_i\)\strut
-\end{minipage}\tabularnewline
-\midrule
-\endhead
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-1\strut
-\end{minipage} & \begin{minipage}[t]{0.34\columnwidth}\centering\strut
-\(2\)\strut
-\end{minipage} & \begin{minipage}[t]{0.44\columnwidth}\centering\strut
-\(0\)\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-2\strut
-\end{minipage} & \begin{minipage}[t]{0.34\columnwidth}\centering\strut
-\(1\)\strut
-\end{minipage} & \begin{minipage}[t]{0.44\columnwidth}\centering\strut
-\(\pm \frac{1}{\sqrt 3}\)\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-3\strut
-\end{minipage} & \begin{minipage}[t]{0.34\columnwidth}\centering\strut
-\(0\)\strut
-\end{minipage} & \begin{minipage}[t]{0.44\columnwidth}\centering\strut
-\(\frac{8}{9}\)\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut
-\end{minipage} & \begin{minipage}[t]{0.34\columnwidth}\centering\strut
-\(\pm \sqrt \frac{3}{5}\)\strut
-\end{minipage} & \begin{minipage}[t]{0.44\columnwidth}\centering\strut
-\(\frac{5}{9}\)\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-4\strut
-\end{minipage} & \begin{minipage}[t]{0.34\columnwidth}\centering\strut
-\(\frac{18+\sqrt{30}}{36}\)\strut
-\end{minipage} & \begin{minipage}[t]{0.44\columnwidth}\centering\strut
-\(\pm \sqrt {\frac{3}{7} -\frac{2}{7} \sqrt{\frac{6}{5}}}\)\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.13\columnwidth}\centering\strut
-\strut
-\end{minipage} & \begin{minipage}[t]{0.34\columnwidth}\centering\strut
-\(\frac{18-\sqrt{30}}{36}\)\strut
-\end{minipage} & \begin{minipage}[t]{0.44\columnwidth}\centering\strut
-\(\pm \sqrt {\frac{3}{7} +\frac{2}{7} \sqrt{\frac{6}{5}}}\)\strut
-\end{minipage}\tabularnewline
-\bottomrule
-\end{longtable}
+    \section{Gauss Quadrature rule}\label{gauss-quadrature-rule}
+
+\[     \int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^n w_i f(x_i)\]
+
+Reference: Stoer, Josef; Bulirsch, Roland (2002), Introduction to
+Numerical Analysis (3rd ed.), Springer, ISBN 978-0-387-95452-3
 
     \section{Example}\label{example}
 
@@ -535,27 +495,28 @@ Trapezoidal rule :
 \(\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx \approx \frac{2}{2}\left( f \left( -1\right)+ f \left( 1\right)\right)\)
 
 Gauss quadrature:
+
 \(\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx \approx f \left( \frac{-\sqrt 3}{3}\right)+ f \left( \frac{\sqrt 3}{3}\right)\)
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}22}]:} \PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{integrate} \PY{k}{import} \PY{n}{quad}
-         \PY{k+kn}{from} \PY{n+nn}{numpy} \PY{k}{import} \PY{n}{sqrt}\PY{p}{,} \PY{n}{sin}\PY{p}{,} \PY{n}{cos}\PY{p}{,} \PY{n}{pi}
-         
-         \PY{k}{def} \PY{n+nf}{f}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
-             \PY{k}{return} \PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{cos}\PY{p}{(}\PY{n}{x}\PY{p}{)} \PY{c+c1}{\PYZsh{}integrant}
+{\color{incolor}In [{\color{incolor}5}]:} \PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{integrate} \PY{k}{import} \PY{n}{quad}
+        \PY{k+kn}{from} \PY{n+nn}{numpy} \PY{k}{import} \PY{n}{sqrt}\PY{p}{,} \PY{n}{sin}\PY{p}{,} \PY{n}{cos}\PY{p}{,} \PY{n}{pi}
+        
+        \PY{k}{def} \PY{n+nf}{f}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{:}
+            \PY{k}{return} \PY{n}{x}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{cos}\PY{p}{(}\PY{n}{x}\PY{p}{)} \PY{c+c1}{\PYZsh{}integrant}
 \end{Verbatim}
 
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}23}]:} \PY{n}{I\PYZus{}actual} \PY{o}{=}\PY{l+m+mi}{2}\PY{o}{/}\PY{l+m+mi}{3} \PY{o}{+} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{}computed integral}
-         
-         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Analytical computation of integral       is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{I\PYZus{}actual}\PY{p}{)}
-         
-         \PY{c+c1}{\PYZsh{}Trapezoidal rule for integral computation}
-         \PY{n}{h}\PY{o}{=}\PY{l+m+mi}{2}
-         \PY{n}{I\PYZus{}trapezoidal} \PY{o}{=} \PY{n}{h}\PY{o}{*}\PY{p}{(}\PY{n}{f}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{+}\PY{n}{f}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}
-         \PY{n}{error\PYZus{}trapezoidal} \PY{o}{=} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{I\PYZus{}actual} \PY{o}{\PYZhy{}} \PY{n}{I\PYZus{}trapezoidal}\PY{p}{)}                   
-         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Trapezoidal rule computation of integral is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{ and error is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{I\PYZus{}trapezoidal}\PY{p}{,} \PY{n}{error\PYZus{}trapezoidal}\PY{p}{)}\PY{p}{)}
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{I\PYZus{}actual} \PY{o}{=}\PY{l+m+mi}{2}\PY{o}{/}\PY{l+m+mi}{3} \PY{o}{+} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{sin}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)} \PY{c+c1}{\PYZsh{}computed integral}
+        
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Analytical computation of integral       is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{I\PYZus{}actual}\PY{p}{)}
+        
+        \PY{c+c1}{\PYZsh{}Trapezoidal rule for integral computation}
+        \PY{n}{h}\PY{o}{=}\PY{l+m+mi}{2}
+        \PY{n}{I\PYZus{}trapezoidal} \PY{o}{=} \PY{n}{h}\PY{o}{*}\PY{p}{(}\PY{n}{f}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{+}\PY{n}{f}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}
+        \PY{n}{error\PYZus{}trapezoidal} \PY{o}{=} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{I\PYZus{}actual} \PY{o}{\PYZhy{}} \PY{n}{I\PYZus{}trapezoidal}\PY{p}{)}                   
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Trapezoidal rule computation of integral is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{ and error is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{I\PYZus{}trapezoidal}\PY{p}{,} \PY{n}{error\PYZus{}trapezoidal}\PY{p}{)}\PY{p}{)}
 \end{Verbatim}
 
 
@@ -566,11 +527,11 @@ Trapezoidal rule computation of integral is 3.0806046117 and error is 0.73099597
     \end{Verbatim}
 
     \begin{Verbatim}[commandchars=\\\{\}]
-{\color{incolor}In [{\color{incolor}24}]:} \PY{c+c1}{\PYZsh{}Gauss quadrature rule for integral computation}
-         \PY{n}{I\PYZus{}Gauss\PYZus{}Quadrature} \PY{o}{=} \PY{n}{f}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{)}\PY{o}{+}\PY{n}{f}\PY{p}{(}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{)}
-         \PY{n}{error\PYZus{}gauss} \PY{o}{=} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{I\PYZus{}actual} \PY{o}{\PYZhy{}} \PY{n}{I\PYZus{}Gauss\PYZus{}Quadrature}\PY{p}{)}
-         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Analytical computation of integral       is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{I\PYZus{}actual}\PY{p}{)}
-         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Gauss quadrature computation of integral is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{ and error is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{I\PYZus{}Gauss\PYZus{}Quadrature}\PY{p}{,} \PY{n}{error\PYZus{}gauss}\PY{p}{)} \PY{p}{)}
+{\color{incolor}In [{\color{incolor}7}]:} \PY{c+c1}{\PYZsh{}Gauss quadrature rule for integral computation}
+        \PY{n}{I\PYZus{}Gauss\PYZus{}Quadrature} \PY{o}{=} \PY{n}{f}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{)}\PY{o}{+}\PY{n}{f}\PY{p}{(}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{3}\PY{p}{)}
+        \PY{n}{error\PYZus{}gauss} \PY{o}{=} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{I\PYZus{}actual} \PY{o}{\PYZhy{}} \PY{n}{I\PYZus{}Gauss\PYZus{}Quadrature}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Analytical computation of integral       is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{I\PYZus{}actual}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Gauss quadrature computation of integral is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{ and error is }\PY{l+s+si}{\PYZpc{}1.10f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{I\PYZus{}Gauss\PYZus{}Quadrature}\PY{p}{,} \PY{n}{error\PYZus{}gauss}\PY{p}{)} \PY{p}{)}
 \end{Verbatim}
 
 
@@ -591,13 +552,25 @@ Then
 
 \[ \int_{a}^b f(x)\,dx = \int_{-1}^1 f\left(\frac{1}{2}(a+b)+\frac{1}{2}(b-a)t \right) \frac{b-a}{2}\,dt\]
 
+\subsubsection{Remark}\label{remark}
+
+\begin{itemize}
+\tightlist
+\item
+  Using \(n\) quadrature points, a polynomial \(P(x)\) of degree
+  \((2n – 1)\) or less will be integrated exactly.
+\item
+  If computational efforts being equal,Gaussian integration yields the
+  most accurate results.
+\end{itemize}
+
     \subsection{Summary}\label{summary}
 
 \begin{itemize}
 \item
-  Numerical experiements
+  Numerical experiments
 \item
-  Gauss quadrature concepts:
+  Gauss quadrature rule:
 
   \begin{itemize}
   \tightlist
@@ -608,6 +581,10 @@ Then
     Compared to trapezoidal rule
   \end{itemize}
 \end{itemize}
+
+\subsubsection{Homework}\label{homework}
+
+Exercise 2.3, 2.5 and Numerical experiments with functions from 2.6
 
 
     % Add a bibliography block to the postdoc
