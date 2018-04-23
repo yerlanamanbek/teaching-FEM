@@ -11905,13 +11905,15 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Introduction-to-Finite-Element-Methods">Introduction to Finite Element Methods<a class="anchor-link" href="#Introduction-to-Finite-Element-Methods">&#182;</a></h2><p><br></p>
+<h2 id="Introduction-to-Finite-Element-Methods">Introduction to Finite Element Methods<a class="anchor-link" href="#Introduction-to-Finite-Element-Methods">&#182;</a></h2><p><img align="right" width="30%" src="images/Example_of_2D_mesh.png"></p>
+<p><br></p>
 <h3 id="Gauss-quadrature-rules">Gauss quadrature rules<a class="anchor-link" href="#Gauss-quadrature-rules">&#182;</a></h3><p><br></p>
 <h3 id="Yerlan-Amanbek">Yerlan Amanbek<a class="anchor-link" href="#Yerlan-Amanbek">&#182;</a></h3><p><b> yerlan@utexas.edu </b></p>
 <table style="border-style: hidden;">
 <tr>
 <td style="border-left: none"><img src="images/ices-logo-2017.png" width="350"></td>
 </tr>
+
 </table>
 </div>
 </div>
@@ -11920,9 +11922,13 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Motivation">Motivation<a class="anchor-link" href="#Motivation">&#182;</a></h1><ul>
+<li>Integrant are complicated functions</li>
+<li>Basis function are polynomials of higher order </li>
+</ul>
 <h1 id="Objective">Objective<a class="anchor-link" href="#Objective">&#182;</a></h1><ul>
 <li>Revisit numerical intergration methods</li>
-<li>Gauss integration(optimal)</li>
+<li>Gauss quadrature rule(optimal for polynomials)</li>
 </ul>
 <h2 id="Set-up">Set-up<a class="anchor-link" href="#Set-up">&#182;</a></h2><p>The notebook relies on Python code. To initialize the notebook, select <strong>Cell-&gt;Run All Below</strong></p>
 <!-- * The efficacy of this approach will be judged by the
@@ -11939,10 +11945,17 @@ polynomials of degree 2n - 1 or less. -->
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>In general, case a mapping between elements and reference(master) elements is used to simplify the integration domain.</p>
-<p>We need to compute the definite integral a lot in the FEM computations.</p>
-<p>$$    I :=  \int_{a}^b f(x)\,dx$$</p>
-<p>The integral can be viewed graphically as the area between the x-axis and the curve y = f (x) in the region of the limits of integration. Thus, we can interpret numerical integration as an approximation of that area.</p>
+<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><!--- In general, case a mapping between elements and reference(master) elements is used to simplify the integration domain. -->
+<img align="right" width="30%" src="images/integration_func.png"> 
+
+We need to compute the definite integral frequently in the FEM computations.
+
+$$   \int_{a}^b f(x)\,dx \approx \sum_{i=1}^n w_i f(x_i)$$
+
+The integral can be viewed graphically as the area between the $x$-axis and the curve $y = f (x)$ in the region of the limits of integration. Thus, we can interpret numerical integration as an approximation of that area.
+
+
+
 <!--- The Newton formulas discussed so far have used equally spaced nodes in the interval $[a, b]$ of the form $x_j = a+jh$  for  $j \in \mathbb{Z}$,
 where 
 $$ h=\frac{b-a}{n} $$ 
@@ -11952,12 +11965,12 @@ for given $n \in \mathbb{N}$ -->
 </div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Do not change the text in this box</span>
 <span class="n">f_box</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;exp(-x**2)&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x)=$&#39;</span><span class="p">)</span>
-<span class="n">n_slider</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$n_</span><span class="si">{start}</span><span class="s1">$&#39;</span><span class="p">)</span>
+<span class="n">n_slider</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$n_</span><span class="si">{start}</span><span class="s1">$&#39;</span><span class="p">)</span>
 <span class="n">method_type</span> <span class="o">=</span> <span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="s1">&#39;midpoint&#39;</span><span class="p">,</span><span class="s1">&#39;trapezoid&#39;</span><span class="p">,</span><span class="s1">&#39;simpson&#39;</span><span class="p">],</span>
                         <span class="n">value</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Method:&#39;</span><span class="p">)</span>
 <span class="n">interact</span><span class="p">(</span><span class="n">AT</span><span class="o">.</span><span class="n">plot3Areas</span><span class="p">,</span><span class="n">f</span><span class="o">=</span><span class="n">f_box</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s2">&quot;-1.0&quot;</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">n_slider</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="n">method_type</span><span class="p">);</span>
@@ -11981,13 +11994,13 @@ for given $n \in \mathbb{N}$ -->
 
  
  
-<div id="4d660b34-b2ac-4a2b-81c8-ec4ee4c732c4"></div>
+<div id="4f08d1b1-003f-4e4d-a78c-63eeeec86b5e"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#4d660b34-b2ac-4a2b-81c8-ec4ee4c732c4');
+var element = $('#4f08d1b1-003f-4e4d-a78c-63eeeec86b5e');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "aa2bda709a2e4215a5d06840a96bc409", "version_major": 2, "version_minor": 0}
+{"model_id": "cb9832197a7c406796ea7c2e3c36710d", "version_major": 2, "version_minor": 0}
 </script>
 </div>
 
@@ -12029,7 +12042,7 @@ var element = $('#4d660b34-b2ac-4a2b-81c8-ec4ee4c732c4');
 
 </div>
 </div>
-</div></section></section><section><section>
+</div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -12051,13 +12064,13 @@ where $w_j = h$, except $w_1 = w_n = \frac{h}{2}$.</p>
 </div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Do not change the text in this box</span>
-<span class="c1"># -3*x**2+2*x+6</span>
-<span class="n">f_box</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;exp(-x**2)&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x)=$&#39;</span><span class="p">)</span>
-<span class="n">n_slider</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$n_</span><span class="si">{start}</span><span class="s1">$&#39;</span><span class="p">)</span>
+<span class="c1"># -3*x**2+2*x+6  7*x**3-8*x**2-3*x+3</span>
+<span class="n">f_box</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="s2">&quot;-3*x**2+2*x+6&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x)=$&#39;</span><span class="p">)</span>
+<span class="n">n_slider</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">IntSlider</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="nb">max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$n_</span><span class="si">{start}</span><span class="s1">$&#39;</span><span class="p">)</span>
 <span class="n">method_type</span> <span class="o">=</span> <span class="n">Dropdown</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;trapezoid&#39;</span><span class="p">],</span>
                         <span class="n">value</span><span class="o">=</span><span class="s1">&#39;trapezoid&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Method:&#39;</span><span class="p">)</span>
 <span class="n">interact</span><span class="p">(</span><span class="n">AT</span><span class="o">.</span><span class="n">plot3Areas</span><span class="p">,</span><span class="n">f</span><span class="o">=</span><span class="n">f_box</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="s2">&quot;-1.0&quot;</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">n_slider</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="n">method_type</span><span class="p">);</span>
@@ -12081,13 +12094,13 @@ where $w_j = h$, except $w_1 = w_n = \frac{h}{2}$.</p>
 
  
  
-<div id="60db45bd-8877-4041-ac31-a3ada1431517"></div>
+<div id="9b8a8da3-dc4b-4ea4-a323-b272606a0f92"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#60db45bd-8877-4041-ac31-a3ada1431517');
+var element = $('#9b8a8da3-dc4b-4ea4-a323-b272606a0f92');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id": "0744695f42704f9da43a8deccb89389c", "version_major": 2, "version_minor": 0}
+{"model_id": "c92313faaa8342869a66c11c4895beb3", "version_major": 2, "version_minor": 0}
 </script>
 </div>
 
@@ -12110,8 +12123,8 @@ var element = $('#60db45bd-8877-4041-ac31-a3ada1431517');
 </ul>
 <table style="border-style: hidden;">
 <tr>
-<td style="border-left: none"><img src="images/trapezoidalrule.png" width="250"></td>
-<td style="border-left: none"><img src="images/gaussian_quadrature.png" width="250"></td>  
+<td style="border-left: none"><img src="images/trapezoidalrule.png" width="350"></td>
+<td style="border-left: none"><img src="images/gaussian_quadrature.png" width="350"></td>  
 
 </tr>
 </table>
@@ -12150,14 +12163,39 @@ exact for each of these.</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Applying Gaussian Quadrature to each remaining integral
 yields:</p>
-<p>$$\int_{-1}^1 1\,dx = 2 = w_1 + w_2$$</p>
-<p>$$\int_{-1}^1 x \,dx = 0 = w_1 x_1 +w_2 x_2$$</p>
-<p>$$\int_{-1}^1 x^2\,dx = \frac{2}{3} = w_1 x_1^2+w_2x_2^2$$</p>
-<p>$$ \int_{-1}^1 x^3\,dx = 0 =w_1x_1^3 +w_2 x_2^3$$</p>
+<p>$$\int_{-1}^1 1\,dx = 2 = w_1f(x_1) + w_2f(x_2)=w_1 + w_2$$</p>
 
 </div>
 </div>
-</div></section><section>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$$\int_{-1}^1 x \,dx = 0 = w_1f(x_1) + w_2f(x_2)= w_1 x_1 +w_2 x_2$$</p>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$$\int_{-1}^1 x^2\,dx = \frac{2}{3} = w_1 x_1^2+w_2x_2^2$$</p>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$$ \int_{-1}^1 x^3\,dx = 0 =  w_1x_1^3 +w_2 x_2^3$$
+ We must solve this system of 4 nonlinear equations in 4 unknowns.</p>
+
+</div>
+</div>
+</div></div></section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -12183,55 +12221,31 @@ Therefore,</p>
 
 </div>
 </div>
-</div><div class="fragment">
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<table>
-<thead><tr>
-<th style="text-align:center">Number of points, $n$</th>
-<th style="text-align:center">Weights, $w_i$</th>
-<th style="text-align:center">Points, $x_i$</th>
-</tr>
-</thead>
-<tbody>
+<h1 id="Gauss-Quadrature-rule">Gauss Quadrature rule<a class="anchor-link" href="#Gauss-Quadrature-rule">&#182;</a></h1><p>$$     \int_{-1}^1 f(x)\,dx \approx \sum_{i=1}^n w_i f(x_i)$$</p>
+<table style="border-style: hidden;">
 <tr>
-<td style="text-align:center">1</td>
-<td style="text-align:center">$2$</td>
-<td style="text-align:center">$0$  </td>
+<td style="border-left: none"><img src="images/gaussian_quadrature_points_weights.png" width="100%"></td>
 </tr>
-<tr>
-<td style="text-align:center">2</td>
-<td style="text-align:center">$1$</td>
-<td style="text-align:center">$\pm \frac{1}{\sqrt 3}$</td>
-</tr>
-<tr>
-<td style="text-align:center">3</td>
-<td style="text-align:center">$0$</td>
-<td style="text-align:center">$\frac{8}{9}$</td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center">$\pm \sqrt \frac{3}{5}$</td>
-<td style="text-align:center">$\frac{5}{9}$</td>
-</tr>
-<tr>
-<td style="text-align:center">4</td>
-<td style="text-align:center">$\frac{18+\sqrt{30}}{36}$</td>
-<td style="text-align:center">$\pm \sqrt {\frac{3}{7} -\frac{2}{7} \sqrt{\frac{6}{5}}}$</td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center">$\frac{18-\sqrt{30}}{36}$</td>
-<td style="text-align:center">$\pm \sqrt {\frac{3}{7} +\frac{2}{7} \sqrt{\frac{6}{5}}}$</td>
-</tr>
-</tbody>
-</table>
-
+</table><p>Reference:
+Stoer, Josef; Bulirsch, Roland (2002), Introduction to Numerical Analysis (3rd ed.), Springer, ISBN 978-0-387-95452-3</p>
+<!--
+|    Number of points, $n$    |                         Weights, $w_i$                                   |                                    Points, $x_i$                                   |
+|:------------------------:|:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|
+|    1         |    $2$                                              |    $0$  
+|    2         |    $1$                                              |    $\pm \frac{1}{\sqrt 3}$                                              |
+|    3         |    $0$                         |    $\frac{8}{9}$                        |
+|              |    $\pm \sqrt \frac{3}{5}$          |    $\frac{5}{9}$                        |
+|    4         |    $\frac{18+\sqrt{30}}{36}$    |    $\pm \sqrt {\frac{3}{7} -\frac{2}{7} \sqrt{\frac{6}{5}}}$    |
+|              |    $\frac{18-\sqrt{30}}{36}$    |    $\pm \sqrt {\frac{3}{7} +\frac{2}{7} \sqrt{\frac{6}{5}}}$    |
+-->
 </div>
 </div>
-</div></div></section></section><section><section>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -12239,8 +12253,8 @@ Therefore,</p>
 <h1 id="Example">Example<a class="anchor-link" href="#Example">&#182;</a></h1><p>$\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx$ = $\frac{x^3}{3} \bigg\rvert_{-1}^{1} +\sin{x}\bigg\rvert_{-1}^{1} =\frac{2}{3}+2\sin(1)$</p>
 <p>Trapezoidal rule :</p>
 <p>$\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx \approx \frac{2}{2}\left( f \left( -1\right)+ f \left( 1\right)\right)$</p>
-<p>Gauss quadrature:
-$\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx \approx f \left( \frac{-\sqrt 3}{3}\right)+ f \left( \frac{\sqrt 3}{3}\right)$</p>
+<p>Gauss quadrature:</p>
+<p>$\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx \approx f \left( \frac{-\sqrt 3}{3}\right)+ f \left( \frac{\sqrt 3}{3}\right)$</p>
 
 </div>
 </div>
@@ -12264,7 +12278,7 @@ $\int_{-1}^1 \left( x^2+\cos{x} \right)\,dx \approx f \left( \frac{-\sqrt 3}{3}\
 </div><div class="fragment">
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">I_actual</span> <span class="o">=</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#computed integral</span>
@@ -12304,7 +12318,7 @@ Trapezoidal rule computation of integral is 3.0806046117 and error is 0.73099597
 </div></div><div class="fragment">
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Gauss quadrature rule for integral computation</span>
@@ -12346,7 +12360,18 @@ Gauss quadrature computation of integral is 2.3424903221 and error is 0.00711831
 <p>Let $x = \frac{1}{2}(a+b)+\frac{1}{2}(b-a)t$, with $t \in [-1, 1]$
 Then</p>
 <p>$$ \int_{a}^b f(x)\,dx = \int_{-1}^1 f\left(\frac{1}{2}(a+b)+\frac{1}{2}(b-a)t \right) \frac{b-a}{2}\,dt$$</p>
+<h3 id="Remark">Remark<a class="anchor-link" href="#Remark">&#182;</a></h3><ul>
+<li>Using $n$ quadrature points, a polynomial $P(x)$ of degree $(2n – 1)$ or less will be integrated exactly. </li>
+<li>If computational efforts being equal,Gaussian integration yields the most accurate results.</li>
+</ul>
+<!--Suppose $I_n(f)$ is the Gaussian quadrature rule, i.e. $I_n(f) : =\sum_{i=1}^n w_i f(x_i)$
 
+where the element nodes $\{x_j\}_{j=0}^{n}$ are $n+1$ roots of a degree $(n+1)$ orthogonal polynomial on $[a, b]$ with weight function $w$, and $w_j=\int_a^b l_j(x)w(x)dx$.
+
+Then
+$$I_n(f)=\int_a^b f(x)w(x)dx$$
+
+for all ponynomials $f$ of degree  $2n+1$. -->
 </div>
 </div>
 </div></section></section><section><section>
@@ -12355,14 +12380,15 @@ Then</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><ul>
-<li>Numerical experiements</li>
-<li><p>Gauss quadrature concepts:</p>
+<li>Numerical experiments</li>
+<li><p>Gauss quadrature rule:</p>
 <ul>
 <li>using $n$ quadrature points, a polynomial P(x) of degree (2n – 1) or less will be integrated exactly. </li>
 <li>Compared to trapezoidal rule</li>
 </ul>
 </li>
 </ul>
+<h3 id="Homework">Homework<a class="anchor-link" href="#Homework">&#182;</a></h3><p>Exercise 2.3, 2.5 and Numerical  experiments with functions from 2.6</p>
 <!-- * When the same number of nodes is used, the algebraic degree of precision of the Gaussian quadrature is higher than that of the Newton-Cotes quadrature. -->
 </div>
 </div>
