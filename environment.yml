@@ -1,0 +1,13 @@
+channels:
+  - damianavila82
+  - conda-forge
+dependencies:
+  - python
+  - ipywidgets
+  - widgetsnbextension
+  - numpy
+  - matplotlib
+  - pandas
+  - bokeh
+  - rise
+  - scipy
