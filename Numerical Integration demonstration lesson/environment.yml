@@ -3,12 +3,14 @@ channels:
   - damianavila82
   - conda-forge
 dependencies:
-- python 
-- numpy
-- matplotlib
-- scipy
-- widgetsnbextension
-- ipywidgets
-- pandas
-- bokeh
-- rise
+    - python 
+    - numpy
+    - matplotlib
+    - scipy
+    - widgetsnbextension
+    - ipywidgets
+    - pandas
+    - bokeh
+    - rise
+
+
